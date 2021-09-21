@@ -1,12 +1,12 @@
 from flask import Blueprint, request, jsonify
-from modules.networking import conversion_methods
-from modules.auth_methods import Restricted
+from modules.networking import ConversionMethods
+from modules.auth_methods import Token
 
 networking = Blueprint('networking', __name__)
-convert = conversion_methods()
+convert = ConversionMethods()
 
 @networking.route("/cidr-to-mask")
-@Restricted.requiere_token
+@Token.requiere_token
 def urlCidrToMask():
      """
      url example:
@@ -29,7 +29,7 @@ def urlCidrToMask():
 
 
 @networking.route("/mask-to-cidr")
-@Restricted.requiere_token
+@Token.requiere_token
 def urlMaskToCidr():
      """
      url example:

@@ -16,13 +16,14 @@ class Database():
         self.cursor = self.db_connection.cursor()
 
     def get_user_by_name(self, username):
-        """ 
+        """
         Query configured database for user info.
-        
-        :param username: match username to query
-        :type username: `str`
-        :returns: salt, password and role of the user 
-        :rtype: `tuple`
+
+        Args:
+            param1 (`str`): the username to match in the query
+
+        Returns:
+            `tuple`: salt value, password and role of the user
         """
         self.cursor.execute(
             f"SELECT salt, password, role \
@@ -33,13 +34,13 @@ class Database():
     def validate_user_password(self, username, password_from_request):
         """
         Validate user password
-        
-        :param username: User to test password
-        :type username: `str`
-        :param password_from_request: password to validate
-        :type password_from_request: `str`
-        :returns: If password matches user
-        :rtype: `True`if valid, `False`otherwise
+
+        Args:
+            param1 (`str`): User to test password
+            param2 (`str`): password to validate
+
+        Returns:
+            `bool`: True if password is valid, False otherwise
         """
         user_info = self.get_user_by_name(username)
         if user_info:
@@ -49,24 +50,24 @@ class Database():
                 (password_from_request+salt).encode()).hexdigest()
 
             return hashed_password == user_password_from_db
-        else:
-            return False
+        return False
 
     def get_role_by_username(self, username):
         """
         Get role of an specific user
-        
-        :param username: user to match the query
-        :type username: `str`
-        :returns: role name of the matched user
-        :rtype: `str`
+
+        Args:
+            param1 (`str`): user to match the query
+
+        Returns:
+            `str`: Role name of the matched user
+
         """
         user_info = self.get_user_by_name(username)
 
         if user_info:
             return user_info[0][2]
-        else:
-            return False
+        return False
 
     def __enter__(self):
         return self

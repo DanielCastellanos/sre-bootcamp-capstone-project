@@ -11,9 +11,13 @@ token = Token()
 def url_login():
     """
     Main login function.
-    Gets username and password from request.
-    Returns jwt token if credentials are valid or failed authentication
-    message otherwise. 
+
+    Args:
+        param1 (`request`): Username and password.
+
+    Returns: 
+        JWT token if credentials are valid or failed authentication
+        message otherwise.
     """
 
     access_denied_response = Response(
@@ -34,13 +38,12 @@ def url_login():
             return access_denied_response
         role = database.get_role_by_username(username)
 
-    generated_token = token.generateToken(role)
+    generated_token = token.generate_token(role)
     if generated_token is not False:
         return json.dumps(
             {"data": generated_token}
         )
-    else:
-        return Response(
-            json.dumps({"error":"could not generate token"}),
-            status=500, mimetype='application/json'
-        )
+    return Response(
+        json.dumps({"error":"could not generate token"}),
+        status=500, mimetype='application/json'
+    )

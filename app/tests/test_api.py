@@ -5,7 +5,7 @@ import json
 from schema import Schema, And, Use
 
 
-class test_api(unittest.TestCase):
+class TestFlaskAPI(unittest.TestCase):
 
     def setUp(self):
         app.testing = True
@@ -13,16 +13,15 @@ class test_api(unittest.TestCase):
         self.headers = {'Authorization':
                         f'Bearer JWT  {Config.TOKEN}'}
 
-        self.success_schema = Schema(
-            And(Use(json.loads), {
-                "function": str,
-                "input": str,
-                "output": str
-            }))
-        self.error_schema = Schema(
-            And(Use(json.loads), {
-                "error": str,
-            }))
+        self.success_schema = Schema(And(Use(json.loads), {
+            "function": str,
+            "input": str,
+            "output": str
+        }))
+
+        self.error_schema = Schema(And(Use(json.loads), {
+            "error": str,
+        }))
 
         self.test_values = [
             ('8', '255.0.0.0'),
@@ -42,19 +41,20 @@ class test_api(unittest.TestCase):
             return self.success_schema.validate(test_string)
         elif 'error' in test_string:
             return self.error_schema.validate(test_string)
-        else:
-            return False
+        return False
 
     def make_assertions(self, url, input_value, expected_response):
         """
         Use the input value to make the request to a url, and validates
         against the expected result.
 
-        :param `str`: url to make the request
-        :param `str`: input value to send, 
-        :param `str`: expected output from the request
+        Args:
+            param1(`str`): url to make the request
+            param2(`str`): input value to send,
+            param3(`str`): expected output from the request
 
-        :returns: `None`
+        Returns:
+            None
         """
         json_response = self.app.get(f'{url}?value={input_value}',
                                      headers=self.headers)

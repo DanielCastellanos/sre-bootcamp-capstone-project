@@ -1,13 +1,14 @@
 import unittest
 from modules.database import Database
 
-class testcase_database(unittest.TestCase):
+
+class TestDatabaseMethods(unittest.TestCase):
 
     def setUp(self):
         self.database = Database()
 
     def test_get_user_by_name(self):
-        
+
         username = "admin"
         db_response = self.database.get_user_by_name(username)
 
@@ -28,7 +29,8 @@ class testcase_database(unittest.TestCase):
         valid_username = 'admin'
         role = self.database.get_role_by_username(valid_username)
 
-        self.assertTrue( role in ['admin','viewer','editor'] )
+        self.assertTrue(role in ['admin', 'viewer', 'editor'])
+
 
 if __name__ == '__main__':
     unittest.main()

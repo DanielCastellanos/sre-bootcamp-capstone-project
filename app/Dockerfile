@@ -5,7 +5,7 @@ COPY ./requirements.txt /requirements.txt
 
 RUN pip install -r /requirements.txt
 
-# COPY ./ /usr/app/
+COPY ./ /usr/app/
 
 EXPOSE 8000
 
