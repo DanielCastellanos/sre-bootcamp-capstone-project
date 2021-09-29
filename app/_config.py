@@ -18,3 +18,6 @@ class Config:
 
     SIGNATURE=getenv('SIGNATURE')
     TOKEN=getenv('TOKEN')
+    NO_ROLE_TOKEN=getenv('NO_ROLE_TOKEN')
+    VALID_USER=getenv('VALID_USER')
+    VALID_PASSWORD=getenv('VALID_PASSWORD')
