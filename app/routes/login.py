@@ -33,7 +33,6 @@ def url_login():
 
     with Database() as database:
         valid_creadentials = database.validate_user_password(username, password)
-        print(valid_creadentials)
         if not valid_creadentials:
             return access_denied_response
         role = database.get_role_by_username(username)
@@ -43,7 +42,3 @@ def url_login():
         return json.dumps(
             {"data": generated_token}
         )
-    return Response(
-        json.dumps({"error":"could not generate token"}),
-        status=500, mimetype='application/json'
-    )

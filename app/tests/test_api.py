@@ -23,6 +23,10 @@ class TestFlaskAPI(unittest.TestCase):
             "error": str,
         }))
 
+        self.login_schema = Schema(And(Use(json.loads), {
+            "data": str,
+        }))
+
         self.test_values = [
             ('8', '255.0.0.0'),
             ('16', '255.255.0.0'),
@@ -41,6 +45,8 @@ class TestFlaskAPI(unittest.TestCase):
             return self.success_schema.validate(test_string)
         elif 'error' in test_string:
             return self.error_schema.validate(test_string)
+        elif 'data' in test_string:
+            return self.login_schema.validate(test_string)
         return False
 
     def make_assertions(self, url, input_value, expected_response):
@@ -66,6 +72,45 @@ class TestFlaskAPI(unittest.TestCase):
             parsed_response['output'], expected_response
         )
 
+    def test_login(self):
+
+        credentials = {
+            'username': Config.VALID_USER,
+            'password': Config.VALID_PASSWORD
+        }
+
+        json_response = self.app.post('/login', data=credentials)
+
+        self.assertEqual(json_response.status_code, 200)
+        self.assertTrue(
+            self.is_valid_schema(json_response.data.decode()))
+
+    def test_failed_login(self):
+
+        missing_credentials_request = self.app.post('/login')
+        self.assertEqual(missing_credentials_request.status_code, 401)
+        self.assertTrue(
+            self.is_valid_schema(missing_credentials_request.data.decode()))
+
+        credentials = {
+            'username' : Config.VALID_USER,
+            'password' : "fake_pass"
+        }
+
+        wrong_password_request = self.app.post('/login', data=credentials)
+        self.assertEqual(missing_credentials_request.status_code, 401)
+        self.assertTrue(
+            self.is_valid_schema(wrong_password_request.data.decode()))
+
+    def assert_failed_access(self, json_response):
+
+        self.assertEqual(
+            json_response.status_code, 401
+        )
+        self.assertTrue(
+            self.is_valid_schema(json_response.data.decode()
+                                 ))
+
     def test_cidr_to_mask(self):
 
         for (cidr, mask) in self.test_values:
@@ -86,3 +131,14 @@ class TestFlaskAPI(unittest.TestCase):
             self.assertTrue(
                 self.is_valid_schema(json_response.data.decode()
                                      ))
+
+    def test_requiere_token_no_role(self):
+
+        headers = {'Authorization':
+                   f'Bearer JWT  {Config.NO_ROLE_TOKEN}'}
+
+        for url, input_value in ('/cidr-to-mask', '8'), ('/mask-to-cidr', '255.0.0.0'):
+            json_response = self.app.get(f'{url}?value={input_value}',
+                                         headers=headers)
+
+            self.assert_failed_access(json_response)

@@ -19,6 +19,12 @@ class TestStringMethods(unittest.TestCase):
                 self.convert.cidr_to_bits(cidr)
             )
 
+    def test_cidr_to_bits_invalid_cidr(self):
+        invalid_cidr = '33'
+        self.assertFalse(
+            self.convert.cidr_to_bits(invalid_cidr)
+        )
+
     def test_split_bits_into_octets(self):
         test_value_list = [
             (['10000000', '00000000', '00000000', '00000000'],

@@ -12,9 +12,9 @@ class ConversionMethods:
     def cidr_to_bits(self, cidr):
 
         int_cidr = int(cidr)
-        if 0 < int_cidr <= 32:
+        if 0 <= int_cidr <= 32:
             return "1"*int_cidr+"0"*(32-int_cidr)
-        return False
+        return ""
 
     def split_bits_into_octets(self, bits):
         octet_list = ["", "", "", ""]
@@ -56,9 +56,6 @@ class ConversionMethods:
         mask_values = [str(self.octet_to_digit(octet))
                        for octet in octet_list]
         mask_string = ".".join(mask_values)
-
-        if not mask_string:
-            return 'Invalid'
 
         return mask_string
 

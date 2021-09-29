@@ -24,6 +24,17 @@ class TestDatabaseMethods(unittest.TestCase):
 
         self.assertTrue(is_valid)
 
+    def test_validate_user_with_fake_password(self):
+
+        username = "not_a_real_user"
+        password = "fake_password"
+
+        self.assertFalse(
+            self.database.validate_user_password(
+                username, password
+            )
+        )
+
     def test_get_role_by_username(self):
 
         valid_username = 'admin'
@@ -31,6 +42,13 @@ class TestDatabaseMethods(unittest.TestCase):
 
         self.assertTrue(role in ['admin', 'viewer', 'editor'])
 
+    def test_get_role_with_fake_username(self):
+
+        invalid_username = 'not_a_real_user'
+        
+        self.assertFalse(
+            self.database.get_role_by_username(invalid_username)
+        )
 
 if __name__ == '__main__':
     unittest.main()
